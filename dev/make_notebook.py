@@ -16,7 +16,7 @@ md(r"""
 
 | | |
 |---|---|
-| Team | Ota Vlna (4IZ582) · Bc. Artem Budnyk (4IZ566) |
+| Team | Bc. Ota Vlna (4IZ582) · Bc. Artem Budnyk (4IZ566) |
 | Dataset | [Glassdoor job reviews](https://www.kaggle.com/datasets/davidgauthier/glassdoor-job-reviews) (`glassdoor_reviews.csv`, 838 566 reviews) |
 | Task | Binary classification of `recommend` — *v* (recommends) vs. *x* (does not recommend); neutral *o* excluded |
 | AI component | **Route B — embedding features**: `qwen3-embedding:4b` vectors of the review text vs. a TF-IDF baseline |
@@ -965,7 +965,7 @@ each have inflated the score without making the model more useful.
 
 | Member | Contribution |
 |---|---|
-| Ota Vlna (4IZ582) | *to be completed by the team* — e.g. AI component (embeddings, cache, comparison), modelling and evaluation |
+| Bc. Ota Vlna (4IZ582) | *to be completed by the team* — e.g. AI component (embeddings, cache, comparison), modelling and evaluation |
 | Bc. Artem Budnyk (4IZ566) | *to be completed by the team* — e.g. data understanding, sampling, preprocessing, TF-IDF baseline |
 
 **AI tools.** *To be completed by the team, honestly and specifically* — for example: the notebook skeleton and parts
