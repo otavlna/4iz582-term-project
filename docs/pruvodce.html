@@ -1,0 +1,693 @@
+<title>Průvodce semestrálkou Glassdoor</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: sticky table of contents on the left (wide screens), one readable 68ch column of text; "v" blue and "x" red are the two classes of the target and colour everything that relates to them. */
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --fg: #1d2330;
+  --muted: #5b6475;
+  --line: #dde1e8;
+  --accent: #2f5fb3;
+  --v: #3b7dd8;
+  --x: #b0413e;
+  --note-bg: #eef3fb;
+  --dev-bg: #f1f0f7;
+  --code-bg: #eceff4;
+  --ok: #2e7d4f;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12151c; --surface: #1a1f29; --fg: #e3e7ee; --muted: #9aa3b4; --line: #2c3442;
+    --accent: #7ea6ec; --v: #6ea2ea; --x: #e07a76; --note-bg: #1b2433; --dev-bg: #211f2e; --code-bg: #222935; --ok: #6cc797;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12151c; --surface: #1a1f29; --fg: #e3e7ee; --muted: #9aa3b4; --line: #2c3442;
+  --accent: #7ea6ec; --v: #6ea2ea; --x: #e07a76; --note-bg: #1b2433; --dev-bg: #211f2e; --code-bg: #222935; --ok: #6cc797;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 64px;
+}
+a { color: var(--accent); }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 48px; }
+@media (max-width: 900px) { .wrap { grid-template-columns: minmax(0, 1fr); gap: 0; } }
+
+/* table of contents */
+nav.toc { position: sticky; top: env(safe-area-inset-top, 0px); align-self: start; max-height: 100vh; overflow-y: auto; padding-block: 32px; font-size: 14.5px; }
+nav.toc h2 { font-family: var(--font-display); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+nav.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+nav.toc a { display: block; padding: 3px 8px; border-radius: 5px; color: var(--fg); text-decoration: none; }
+nav.toc a:hover { background: var(--surface); }
+nav.toc .part { color: var(--muted); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; margin: 12px 8px 2px; }
+@media (max-width: 900px) { nav.toc { display: none; } }
+details.toc-mobile { display: none; margin: 16px 0 0; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 14px; }
+@media (max-width: 900px) { details.toc-mobile { display: block; } }
+details.toc-mobile ol { padding-left: 20px; font-size: 15px; }
+
+main { min-width: 0; max-width: 72ch; padding-block: 32px; }
+header.hero { padding-block: 8px 24px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+.eyebrow { font-family: var(--font-mono); font-size: 12.5px; letter-spacing: .06em; color: var(--muted); text-transform: uppercase; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.2; }
+h1 { font-size: clamp(30px, 5vw, 44px); margin: 8px 0 12px; font-weight: 700; }
+h2 { font-size: 27px; margin: 56px 0 8px; font-weight: 700; scroll-margin-top: 16px; }
+h3 { font-size: 20px; margin: 30px 0 6px; font-weight: 500; }
+.step { font-family: var(--font-mono); font-size: 13px; color: var(--accent); display: block; margin-bottom: 4px; letter-spacing: .04em; }
+.lead { font-size: 19px; color: var(--muted); margin: 0; }
+p, ul, ol { margin: 10px 0; }
+li { margin: 4px 0; }
+strong { font-weight: 600; }
+.v { color: var(--v); font-weight: 600; } .x { color: var(--x); font-weight: 600; }
+
+/* terms that link to the glossary */
+a.t { color: inherit; text-decoration: underline dotted var(--accent); text-underline-offset: 3px; }
+a.t:hover { color: var(--accent); }
+
+code, pre { font-family: var(--font-mono); font-size: 14px; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+pre { background: var(--code-bg); padding: 14px 16px; border-radius: 8px; overflow-x: auto; line-height: 1.5; margin: 14px 0; }
+pre code { background: none; padding: 0; }
+pre .c { color: var(--muted); }
+
+/* asides: role-coded */
+.box { border-radius: 8px; padding: 12px 16px; margin: 16px 0; }
+.box > :first-child { margin-top: 0; } .box > :last-child { margin-bottom: 0; }
+.box .label { display: block; font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px; }
+.analogy { background: var(--note-bg); }
+.analogy .label { color: var(--accent); }
+.ours { background: var(--surface); border: 1px solid var(--line); }
+.ours .label { color: var(--ok); }
+.dev { background: var(--dev-bg); }
+.dev .label { color: var(--muted); }
+
+.tbl { overflow-x: auto; margin: 14px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; color: var(--muted); font-size: 13.5px; }
+td.n, th.n { text-align: right; }
+tr.win td { font-weight: 600; }
+
+figure { margin: 18px 0; }
+figure .paper { background: #ffffff; border-radius: 8px; padding: 8px; border: 1px solid var(--line); overflow-x: auto; }
+figure img { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+figcaption { font-size: 14.5px; color: var(--muted); margin-top: 6px; }
+.diagram { overflow-x: auto; margin: 16px 0; }
+.diagram svg { display: block; max-width: 100%; height: auto; }
+svg text { font-family: var(--font-body); }
+
+/* confusion matrix */
+.cm { display: grid; grid-template-columns: auto 1fr 1fr; gap: 4px; max-width: 460px; font-size: 15px; font-variant-numeric: tabular-nums; margin: 14px 0; }
+.cm div { padding: 10px; border-radius: 6px; }
+.cm .h { color: var(--muted); font-size: 13px; padding: 4px 8px; }
+.cm .good { background: var(--note-bg); }
+.cm .bad { background: var(--code-bg); }
+.cm b { font-size: 20px; display: block; }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 18px 0; }
+.stats div { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; }
+.stats b { font-family: var(--font-display); font-size: 26px; display: block; font-variant-numeric: tabular-nums; }
+.stats span { font-size: 14px; color: var(--muted); }
+
+details.qa { border-bottom: 1px solid var(--line); padding: 10px 0; }
+details.qa summary { cursor: pointer; font-weight: 600; }
+details.qa[open] summary { margin-bottom: 6px; }
+details.qa .where { font-size: 14px; color: var(--muted); }
+
+dl.gloss { display: grid; gap: 0; margin: 12px 0; }
+dl.gloss dt { font-weight: 600; margin-top: 16px; scroll-margin-top: 16px; }
+dl.gloss dt .en { font-weight: 400; color: var(--muted); font-size: 15px; }
+dl.gloss dd { margin: 2px 0 0 0; }
+dl.gloss dt:target { color: var(--accent); }
+.foot { margin-top: 48px; font-size: 14.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<div class="wrap">
+<nav class="toc" aria-label="Obsah">
+  <h2>Obsah</h2>
+  <ol>
+    <li><a href="#uvod">Projekt za minutu</a></li>
+    <li><a href="#uloha">Co vlastně řešíme</a></li>
+    <li><a href="#mapa">Mapa postupu</a></li>
+    <li class="part">Data</li>
+    <li><a href="#zadani">1 · Zadání</a></li>
+    <li><a href="#eda">2 · Průzkum dat</a></li>
+    <li><a href="#leakage">3 · Únik informací</a></li>
+    <li><a href="#cisteni">4 · Vzorek a čištění</a></li>
+    <li><a href="#split">5 · Rozdělení dat</a></li>
+    <li class="part">Model</li>
+    <li><a href="#tfidf">6 · Text → čísla: TF-IDF</a></li>
+    <li><a href="#embed">7 · Text → čísla: embeddingy</a></li>
+    <li><a href="#pipeline">8 · Pipeline</a></li>
+    <li><a href="#modely">9 · Modely</a></li>
+    <li><a href="#ladeni">10 · Ladění</a></li>
+    <li class="part">Vyhodnocení</li>
+    <li><a href="#metriky">11 · Metriky</a></li>
+    <li><a href="#prah">12 · Práh</a></li>
+    <li><a href="#ai">13 · AI komponenta</a></li>
+    <li class="part">Zbytek</li>
+    <li><a href="#jak">Jak jsem to dělal já</a></li>
+    <li><a href="#obhajoba">Otázky na obhajobu</a></li>
+    <li><a href="#glosar">Glosář</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="hero">
+  <span class="eyebrow">4IZ582 · semestrální projekt · průvodce pro programátora</span>
+  <h1>Doporučil by zaměstnanec svého zaměstnavatele?</h1>
+  <p class="lead">Krok za krokem, jak vznikl notebook <code>term_project.ipynb</code>: co se v kterém kroku dělá, proč, a co znamenají všechny ty pojmy. Psáno pro někoho, kdo umí programovat, ale data science nedělá.</p>
+  <details class="toc-mobile"><summary>Obsah</summary>
+    <ol>
+      <li><a href="#uvod">Projekt za minutu</a></li><li><a href="#uloha">Co vlastně řešíme</a></li><li><a href="#mapa">Mapa postupu</a></li>
+      <li><a href="#zadani">Zadání</a></li><li><a href="#eda">Průzkum dat</a></li><li><a href="#leakage">Únik informací</a></li>
+      <li><a href="#cisteni">Vzorek a čištění</a></li><li><a href="#split">Rozdělení dat</a></li><li><a href="#tfidf">TF-IDF</a></li>
+      <li><a href="#embed">Embeddingy</a></li><li><a href="#pipeline">Pipeline</a></li><li><a href="#modely">Modely</a></li>
+      <li><a href="#ladeni">Ladění</a></li><li><a href="#metriky">Metriky</a></li><li><a href="#prah">Práh</a></li>
+      <li><a href="#ai">AI komponenta</a></li><li><a href="#jak">Jak jsem to dělal já</a></li><li><a href="#obhajoba">Otázky na obhajobu</a></li>
+      <li><a href="#glosar">Glosář</a></li>
+    </ol>
+  </details>
+</header>
+
+<p>Podtržené pojmy (třeba <a class="t" href="#g-auc">ROC AUC</a>) vedou do <a href="#glosar">glosáře</a> na konci. Šedé rámečky <em>Analogie</em> překládají pojem do programátorské řeči, rámečky <em>U nás</em> ukazují skutečná čísla z notebooku. Čísla sekcí notebooku jsou uvedena v závorce, třeba (§ 5.3), abys to v kódu rychle našel.</p>
+
+<!-- ============================================================ -->
+<h2 id="uvod">Projekt za minutu</h2>
+<p>Vzali jsme 20 000 recenzí zaměstnavatelů z Glassdooru. Každá má nadpis, text <em>pros</em> (co je dobré) a <em>cons</em> (co je špatné) a odpověď na otázku „Doporučil byste firmu kamarádovi?“: <span class="v">v</span> = ano, <span class="x">x</span> = ne. Naučili jsme počítač odhadnout tuhle odpověď <strong>jen z textu</strong>. Text jsme převedli na čísla dvěma způsoby: klasicky počítáním slov (<a class="t" href="#g-tfidf">TF-IDF</a>) a moderně jazykovým modelem (<a class="t" href="#g-embedding">embeddingy</a>, to je naše povinná „AI komponenta“). Pak jsme oba způsoby poctivě porovnali.</p>
+<div class="stats">
+  <div><b>0.906</b><span>ROC AUC nejlepšího modelu (embeddingy)</span></div>
+  <div><b>0.894</b><span>ROC AUC baseline (TF-IDF)</span></div>
+  <div><b>83 %</b><span>správně zařazených recenzí v testu</span></div>
+  <div><b>2,4 min</b><span>běh celého notebooku</span></div>
+</div>
+<p>Hlavní zjištění: embeddingy jsou o kousek lepší a výrazně lepší, když je málo označených dat. Spojit obě reprezentace nepomohlo a jednoduchý lineární model stačí.</p>
+
+<!-- ============================================================ -->
+<h2 id="uloha">Co vlastně řešíme</h2>
+<p><strong>Klasifikace</strong> je úloha zařadit vstup do jedné z předem daných kategorií. Tady jsou kategorie dvě (doporučuje / nedoporučuje), takže jde o <strong>binární klasifikaci</strong>.</p>
+<ul>
+  <li><strong><a class="t" href="#g-target">Target</a></strong> (cílová proměnná, label) je to, co chceme předpovídat: sloupec <code>recommend</code>. V kódu je to <code>y</code>, kde 1 = doporučuje a 0 = nedoporučuje.</li>
+  <li><strong><a class="t" href="#g-feature">Featury</a></strong> (příznaky) jsou vstupy, ze kterých předpovídáme: text recenze, jestli je autor současný zaměstnanec, jak dlouho tam pracoval a podobně. V kódu je to <code>X</code>, tabulka s jedním řádkem na recenzi.</li>
+  <li><strong><a class="t" href="#g-model">Model</a></strong> je funkce <code>f(X) → pravděpodobnost, že y = 1</code>. Neprogramujeme ji ručně. Algoritmus si její parametry „najde“ z příkladů, u kterých známe správnou odpověď. Tomu se říká <strong>učení s učitelem</strong> (supervised learning).</li>
+</ul>
+<div class="box analogy"><span class="label">Analogie</span>
+<p>Představ si, že máš psát funkci <code>isRecommending(review): boolean</code>, ale místo pravidel máš 16 000 příkladů vstup → výstup. Machine learning je způsob, jak z příkladů automaticky vyrobit tělo funkce. Testovací data pak hrají roli unit testů, které autor funkce nikdy neviděl.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="mapa">Mapa postupu</h2>
+<p>Kurz staví na procesu <a class="t" href="#g-crisp">CRISP-DM</a>: pochopit problém → pochopit data → připravit data → modelovat → vyhodnotit. V našem projektu to vypadá takhle:</p>
+<div class="diagram" role="img" aria-label="Postup: surová data, čištění a vzorek, rozdělení na trénovací a testovací část, převod textu na čísla, model, ladění, volba prahu, jednorázové vyhodnocení na testu">
+<svg viewBox="0 0 760 250" width="760">
+  <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+  <g font-size="13" fill="var(--fg)">
+    <rect x="4" y="20" width="150" height="58" rx="8" fill="var(--surface)" stroke="var(--line)"/>
+    <text x="79" y="45" text-anchor="middle" font-weight="600">Surová data</text><text x="79" y="63" text-anchor="middle" fill="var(--muted)">838 566 recenzí</text>
+    <rect x="200" y="20" width="150" height="58" rx="8" fill="var(--surface)" stroke="var(--line)"/>
+    <text x="275" y="45" text-anchor="middle" font-weight="600">Čištění + vzorek</text><text x="275" y="63" text-anchor="middle" fill="var(--muted)">20 000 řádků</text>
+    <rect x="396" y="20" width="150" height="58" rx="8" fill="var(--surface)" stroke="var(--line)"/>
+    <text x="471" y="45" text-anchor="middle" font-weight="600">Split podle firem</text><text x="471" y="63" text-anchor="middle" fill="var(--muted)">80 % train / 20 % test</text>
+    <rect x="592" y="20" width="160" height="58" rx="8" fill="var(--note-bg)" stroke="var(--accent)"/>
+    <text x="672" y="45" text-anchor="middle" font-weight="600">Text → čísla</text><text x="672" y="63" text-anchor="middle" fill="var(--muted)">TF-IDF / embeddingy</text>
+    <rect x="592" y="160" width="160" height="58" rx="8" fill="var(--surface)" stroke="var(--line)"/>
+    <text x="672" y="185" text-anchor="middle" font-weight="600">Model + ladění</text><text x="672" y="203" text-anchor="middle" fill="var(--muted)">jen na trénovacích</text>
+    <rect x="396" y="160" width="150" height="58" rx="8" fill="var(--surface)" stroke="var(--line)"/>
+    <text x="471" y="185" text-anchor="middle" font-weight="600">Volba prahu</text><text x="471" y="203" text-anchor="middle" fill="var(--muted)">jen na trénovacích</text>
+    <rect x="200" y="160" width="150" height="58" rx="8" fill="var(--surface)" stroke="var(--x)"/>
+    <text x="275" y="185" text-anchor="middle" font-weight="600">Test — jednou</text><text x="275" y="203" text-anchor="middle" fill="var(--muted)">finální čísla</text>
+    <rect x="4" y="160" width="150" height="58" rx="8" fill="var(--surface)" stroke="var(--line)"/>
+    <text x="79" y="185" text-anchor="middle" font-weight="600">Závěry</text><text x="79" y="203" text-anchor="middle" fill="var(--muted)">TF-IDF vs. AI</text>
+  </g>
+  <g stroke="var(--muted)" stroke-width="1.5" fill="none" marker-end="url(#ar)">
+    <path d="M154 49 H196"/><path d="M350 49 H392"/><path d="M546 49 H588"/>
+    <path d="M672 78 V156"/><path d="M592 189 H550"/><path d="M396 189 H354"/><path d="M200 189 H158"/>
+  </g>
+  <text x="471" y="112" text-anchor="middle" font-size="12" fill="var(--x)">testovací data leží stranou až do konce ↓</text>
+</svg>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="zadani"><span class="step">Krok 1</span>Přečíst zadání a rozložit ho na checklist</h2>
+<p>Ze stránky kurzu plyne, co notebook musí obsahovat a za co jsou body (20 bodů celkem):</p>
+<div class="tbl"><table>
+<tr><th>Část</th><th class="n">Body</th><th>Co konkrétně</th><th>Kde v notebooku</th></tr>
+<tr><td>Data a průzkum</td><td class="n">3</td><td>tvar, typy, chybějící hodnoty, poměr tříd, aspoň 2 smysluplné grafy</td><td>§ 2–3</td></tr>
+<tr><td>Předzpracování</td><td class="n">3</td><td>aspoň 2 z: mazání řádků, odvozené sloupce, groupby, chybějící hodnoty, join; kódování až v pipeline</td><td>§ 2.1, 4</td></tr>
+<tr><td>Modelování a ladění</td><td class="n">4</td><td>testovací sada + stratifikovaná CV, aspoň 2 rodiny algoritmů, GridSearch/RandomizedSearch</td><td>§ 5, 7</td></tr>
+<tr><td>Vyhodnocení a reprodukovatelnost</td><td class="n">4</td><td>accuracy + AUC/AP, confusion matrix se zdůvodněným prahem, ROC křivka, test použit jednou, žádný leakage, běh pod 30 min</td><td>§ 5, 8</td></tr>
+<tr><td>AI komponenta (cesta B)</td><td class="n">6</td><td>embeddingy textu jako vstup modelu, srovnání s TF-IDF, cache výstupů, náklady</td><td>§ 6, 9</td></tr>
+</table></div>
+<p>Plus technické podmínky: notebook projde „Restart Kernel and Run All“ do 30 minut, jen relativní cesty, API klíč jen v proměnné prostředí a uložené výstupy modelu, aby šel spustit offline.</p>
+
+<!-- ============================================================ -->
+<h2 id="eda"><span class="step">Krok 2</span>Podívat se na data (EDA)</h2>
+<p><a class="t" href="#g-eda">EDA</a> (exploratory data analysis) je první seznámení s daty, ještě před jakýmkoli modelem. Ptáš se: kolik je řádků a sloupců, jakého jsou typu, co chybí, jak jsou rozložené třídy a co s čím souvisí.</p>
+<h3>Co v datech je</h3>
+<div class="tbl"><table>
+<tr><th>Sloupec</th><th>Obsah</th><th>Použili jsme?</th></tr>
+<tr><td><code>headline</code>, <code>pros</code>, <code>cons</code></td><td>text recenze</td><td><strong>ano, hlavní signál</strong></td></tr>
+<tr><td><code>current</code></td><td>„Current Employee, more than 3 years“</td><td>ano, rozdělené na status + roky</td></tr>
+<tr><td><code>date_review</code>, <code>job_title</code>, <code>location</code></td><td>datum, pozice, místo</td><td>ano, jako odvozené příznaky</td></tr>
+<tr><td><code>firm</code></td><td>název firmy (428 firem)</td><td>ne jako featura, ale pro rozdělení dat (krok 5)</td></tr>
+<tr><td><code>overall_rating</code> + 6 dílčích hodnocení</td><td>hvězdičky 1–5</td><td><strong>ne, únik informací</strong> (krok 3)</td></tr>
+<tr><td><code>ceo_approv</code>, <code>outlook</code></td><td>názor na CEO a výhled firmy</td><td>ne, ze stejného důvodu</td></tr>
+<tr><td><code>recommend</code></td><td>v / x / o</td><td>target (o = bez názoru, vyřazeno)</td></tr>
+</table></div>
+
+<h3>Poměr tříd a baseline</h3>
+<p>71 % recenzí doporučuje, 29 % ne. To je <a class="t" href="#g-imbalance">nevyvážené třídy</a> (class imbalance), i když jen mírně. Důsledek: „model“, který vždycky řekne „doporučuje“, má 71% úspěšnost a přitom nic neumí. Tomu se říká <a class="t" href="#g-baseline">baseline</a> a každý výsledek s ní musíme srovnávat. Proto se nespoléháme jen na <a class="t" href="#g-accuracy">accuracy</a> (podíl správných odpovědí), ale hlavně na metriky z kroku 11.</p>
+
+<figure>
+  <div class="paper"><img src="fig/eda.png" alt="Tři grafy: míra doporučení podle roku a statusu, podíl textu v cons podle třídy, overall_rating proti recommend" loading="lazy"></div>
+  <figcaption>(a) Současní zaměstnanci doporučují častěji než bývalí. (b) Nedoporučující píšou větší část recenze do <em>cons</em>. (c) Hodnocení 1–2 hvězdičky skoro nikdy nedoporučuje, 5 hvězdiček skoro vždy. Tohle je důkaz, že <code>overall_rating</code> je jen jinak zapsaná odpověď (§ 3.3).</figcaption>
+</figure>
+<div class="box dev"><span class="label">Jak jsem na to přišel</span>
+<p>Úplně první, co jsem udělal po rozbalení dat: rychlý skript, který spočítal, jak dobře jednotlivé sloupce samy o sobě předpovídají target. <code>overall_rating</code> sám dal AUC 0,93. To je u reálné úlohy podezřele vysoké číslo a skoro vždycky znamená únik informací. Odtud celé rozhodnutí v kroku 3.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="leakage"><span class="step">Krok 3</span>Únik informací (data leakage)</h2>
+<p>Tohle je nejdůležitější kapitola. Kurz na ni klade důraz a u obhajoby se na ni skoro jistě zeptají.</p>
+<p><a class="t" href="#g-leakage">Data leakage</a> nastane, když se model při učení nebo vyhodnocení dostane k informaci, kterou by v reálném použití neměl. Výsledek pak vypadá skvěle, ale v praxi model selže.</p>
+<div class="box analogy"><span class="label">Analogie</span>
+<p>Unit test, který si očekávanou hodnotu přečte z té samé fixture, kterou testovaná funkce používá ke svému výpočtu. Test je zelený, ale nic neověřuje. Nebo student, který si před písemkou ukradne zadání: známka nic neříká o tom, co umí.</p>
+</div>
+<p>Rozlišujeme několik druhů. U každého je uvedeno, co jsme s ním udělali:</p>
+<div class="tbl"><table>
+<tr><th>Druh</th><th>Co to je</th><th>U nás</th></tr>
+<tr><td><strong>Target leakage</strong></td><td>featura, která je důsledkem nebo přepisem odpovědi</td><td>Hvězdičky a <code>recommend</code> vyplňuje uživatel na stejném formuláři ve stejnou chvíli. Model by se naučil „5 hvězd → doporučuje“ a v reálném použití (text bez hodnocení) by neměl z čeho. <strong>Vyřazeno</strong>, ukázka v § 5.3: samotné <code>overall_rating</code> dává AUC 0,93, všechny hvězdičky 0,95.</td></tr>
+<tr><td><strong>Group / entity leakage</strong></td><td>stejná entita v trénovacích i testovacích datech</td><td>Recenze stejné firmy si jsou podobné (název firmy, produkty, typické stížnosti). Kdyby byla firma v obou částech, model by mohl poznávat firmu místo nálady. <strong>Řešení:</strong> každá firma je celá buď v train, nebo v test (krok 5).</td></tr>
+<tr><td><strong>Duplicity</strong></td><td>stejný řádek v obou částech</td><td>24 753 identických recenzí <strong>odstraněno</strong> před vzorkováním. Kontrola v § 5.1: 0 shodných textů mezi train a test.</td></tr>
+<tr><td><strong>Preprocessing leakage</strong></td><td>úprava dat „naučená“ i z testovacích řádků (průměr pro doplnění, škálování, slovník)</td><td>Všechno, co se učí z dat, je uvnitř <a class="t" href="#g-pipeline">pipeline</a> a fituje se jen na trénovacích datech (krok 8).</td></tr>
+<tr><td><strong>Temporal leakage</strong></td><td>informace z budoucnosti použitá pro předpověď minulosti</td><td>Úloha je klasifikovat napsanou recenzi, ne předpovídat budoucí. Žádná featura nevzniká po odpovědi. Zdůvodněno v § 5.2.</td></tr>
+<tr><td><strong>Test-set leakage</strong></td><td>ladění modelu podle výsledků na testu</td><td>Na test sáhneme jen jednou, na konci. Práh i výběr modelu se dělají na trénovacích datech (kroky 10 a 12).</td></tr>
+</table></div>
+
+<!-- ============================================================ -->
+<h2 id="cisteni"><span class="step">Krok 4</span>Vzorek a čištění dat</h2>
+<h3>Proč vzorek</h3>
+<p>Celý dataset má 838 566 řádků. Na embeddingy by to znamenalo zhruba 1,8 hodiny API volání a notebook by se nevešel do 30 minut. Vzali jsme tedy reprodukovatelný vzorek 20 000 recenzí. To je pořád víc, než kurz chce („pár tisíc“).</p>
+<h3>Postup (§ 2.1)</h3>
+<ol>
+  <li><strong>Mazání řádků:</strong> pryč s <code>recommend = o</code> (bez názoru), zbude 604 318 řádků.</li>
+  <li><strong>Chybějící hodnoty v textu:</strong> chybějící nadpis (0,3 %) nahradíme prázdným řetězcem.</li>
+  <li><strong>Deduplikace:</strong> odstraníme 24 753 recenzí s identickým nadpisem + pros + cons.</li>
+  <li><strong><a class="t" href="#g-strat">Stratifikovaný</a> vzorek:</strong> z každé třídy vezmeme stejný podíl, takže vzorek má přesně stejný poměr 70,8 : 29,2 jako celá data. <code>random_state=42</code> zaručí, že pokaždé vyjde stejný vzorek. To je tzv. <a class="t" href="#g-seed">seed</a>.</li>
+</ol>
+<pre><code>sample = (dedup.groupby("recommend", group_keys=False)        <span class="c"># po třídách</span>
+               .sample(frac=N_SAMPLE / len(dedup), random_state=SEED))  <span class="c"># stejný podíl z každé</span></code></pre>
+
+<h3>Tabulka firem: groupby + join</h3>
+<p>Zadání chce aspoň dvě operace předzpracování. Ze všech 838 566 recenzí jsme přes <code>groupby("firm")</code> spočítali pro každou firmu počet recenzí a rok první recenze (zhruba „velikost a viditelnost“ firmy). Tabulka neobsahuje nic z targetu, takže nic neprozrazuje. Pak ji připojíme k recenzím přes <code>merge(..., validate="many_to_one")</code>. Parametr <code>validate</code> nechá pandas zkontrolovat, že každá firma je v tabulce jen jednou, jinak by se řádky tiše zdvojily.</p>
+
+<h3>Odvozené sloupce (§ 4)</h3>
+<div class="tbl"><table>
+<tr><th>Nový sloupec</th><th>Z čeho</th><th>Proč</th></tr>
+<tr><td><code>is_current</code></td><td>„Current…“ / „Former…“ v <code>current</code></td><td>bývalí zaměstnanci doporučují méně (62 % vs. 76 %)</td></tr>
+<tr><td><code>tenure_years</code>, <code>tenure_stated</code></td><td>„more than 3 years“ → 3</td><td>délka působení; když chybí, je NaN a příznak 0</td></tr>
+<tr><td><code>year</code></td><td><code>date_review</code></td><td>podíl doporučení se v čase mění</td></tr>
+<tr><td><code>n_words_*</code></td><td>počet slov v headline / pros / cons</td><td>nespokojení víc píšou do cons</td></tr>
+<tr><td><code>anonymous_title</code>, <code>has_location</code></td><td>prázdná pozice / chybějící místo</td><td>chybějící údaj sám může nést informaci</td></tr>
+<tr><td><code>text</code></td><td>„Headline: …\nPros: …\nCons: …“</td><td>jeden text pro embedding model</td></tr>
+</table></div>
+<p>Tyhle úpravy se dívají vždy jen na jeden řádek a nic se „neučí“ z ostatních řádků, proto je smíme udělat před rozdělením dat. Úpravy, které se učí z dat (průměr, škála, slovník), musí být v pipeline (krok 8).</p>
+<p><strong><a class="t" href="#g-imputation">Imputace</a></strong> je doplnění chybějících hodnot. Chybějící <code>tenure_years</code> doplníme <a class="t" href="#g-median">mediánem</a>, ale až v pipeline, protože medián je „naučená“ hodnota.</p>
+
+<!-- ============================================================ -->
+<h2 id="split"><span class="step">Krok 5</span>Rozdělení dat: train, test a křížová validace</h2>
+<h3>Trénovací a testovací sada</h3>
+<p>Data rozdělíme na <a class="t" href="#g-train">trénovací</a> část (80 %, na ní se model učí a ladí) a <a class="t" href="#g-test">testovací</a> část (20 %, ta simuluje budoucí, nikdy neviděná data). Na test se podíváme jen jednou, úplně na konci. Kdybychom podle testu cokoli upravovali, přestane být nezávislý.</p>
+<div class="box ours"><span class="label">U nás (§ 5.1)</span>
+<p>Train: 16 007 recenzí z 299 firem, 70,8 % doporučuje. Test: 3 993 recenzí z 95 <em>jiných</em> firem, 70,9 % doporučuje. Firem v obou částech: 0. Shodných textů v obou částech: 0.</p>
+</div>
+
+<h3>Křížová validace (cross-validation)</h3>
+<p>Když chceme porovnat varianty modelu (různé nastavení, různé algoritmy), potřebujeme je vyhodnotit, ale na test sáhnout nesmíme. Proto trénovací část rozdělíme ještě jednou na <em>k</em> dílů (u nás 3, tzv. <em>foldy</em>). Model se natrénuje na dvou dílech a vyhodnotí na třetím, a to třikrát, pokaždé s jiným vyhodnocovacím dílem. Výsledky zprůměrujeme. Tomu se říká <a class="t" href="#g-cv">k-fold cross-validation</a>.</p>
+<div class="diagram" role="img" aria-label="Trojnásobná křížová validace: v každém ze tří kol slouží jiná třetina trénovacích dat k vyhodnocení">
+<svg viewBox="0 0 620 170" width="620">
+  <g font-size="13" fill="var(--fg)">
+    <text x="0" y="38">kolo 1</text><text x="0" y="78">kolo 2</text><text x="0" y="118">kolo 3</text>
+    <rect x="70" y="22" width="130" height="26" rx="4" fill="var(--x)" opacity=".85"/><rect x="204" y="22" width="130" height="26" rx="4" fill="var(--v)" opacity=".35"/><rect x="338" y="22" width="130" height="26" rx="4" fill="var(--v)" opacity=".35"/>
+    <rect x="70" y="62" width="130" height="26" rx="4" fill="var(--v)" opacity=".35"/><rect x="204" y="62" width="130" height="26" rx="4" fill="var(--x)" opacity=".85"/><rect x="338" y="62" width="130" height="26" rx="4" fill="var(--v)" opacity=".35"/>
+    <rect x="70" y="102" width="130" height="26" rx="4" fill="var(--v)" opacity=".35"/><rect x="204" y="102" width="130" height="26" rx="4" fill="var(--v)" opacity=".35"/><rect x="338" y="102" width="130" height="26" rx="4" fill="var(--x)" opacity=".85"/>
+    <rect x="490" y="22" width="120" height="106" rx="4" fill="none" stroke="var(--muted)" stroke-dasharray="4 3"/>
+    <text x="550" y="70" text-anchor="middle" fill="var(--muted)">test</text><text x="550" y="88" text-anchor="middle" fill="var(--muted)">(nesahat)</text>
+    <rect x="70" y="146" width="14" height="12" fill="var(--v)" opacity=".35"/><text x="90" y="157">učení</text>
+    <rect x="150" y="146" width="14" height="12" fill="var(--x)" opacity=".85"/><text x="170" y="157">vyhodnocení</text>
+  </g>
+</svg>
+</div>
+<ul>
+  <li><strong><a class="t" href="#g-strat">Stratifikovaná</a></strong> CV: v každém foldu je stejný poměr tříd (71 : 29).</li>
+  <li><strong><a class="t" href="#g-group">Skupinová</a></strong> (grouped) CV: firma je vždy celá v jednom foldu. Obojí najednou dělá <code>StratifiedGroupKFold</code>.</li>
+</ul>
+<pre><code>outer = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=SEED)
+train_idx, test_idx = next(outer.split(df, df[TARGET], groups=df["firm"]))  <span class="c"># 1 z 5 dílů = test (~20 %)</span>
+inner = StratifiedGroupKFold(n_splits=3, shuffle=True, random_state=SEED)   <span class="c"># CV uvnitř trénovací části</span></code></pre>
+<div class="box ours"><span class="label">U nás (§ 5.4): pomohlo to vůbec?</span>
+<p>Zkusili jsme stejný model s náhodnými foldy (AUC 0,883) a se skupinovými foldy (AUC 0,885). Prakticky žádný rozdíl, takže model z textu firmy moc „nepoznává“. Skupinový split jsme stejně nechali: odpovídá zamýšlenému použití (neznámý zaměstnavatel) a nic nestojí. V notebooku je to napsané otevřeně. Očekávání, které se nepotvrdilo, je taky výsledek.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="tfidf"><span class="step">Krok 6</span>Jak z textu udělat čísla I: TF-IDF (baseline)</h2>
+<p>Modely umí počítat jen s čísly, takže text musíme převést na vektor (pole čísel). Klasická metoda je <strong>bag of words</strong> („pytel slov“): pro každé slovo ze slovníku jedno číslo, kolikrát se v textu vyskytuje. Pořadí slov se zahodí.</p>
+<p><a class="t" href="#g-tfidf">TF-IDF</a> (term frequency × inverse document frequency) to vylepšuje: slovo dostane vysokou váhu, když je v <em>tomhle</em> textu časté (TF), ale v celém korpusu vzácné (IDF). Slova jako „the“ nebo „company“ jsou všude, takže skoro nic neváží. „Toxic“ nebo „micromanagement“ jsou vzácná a hodně říkají.</p>
+<div class="tbl"><table>
+<tr><th>Text cons</th><th class="n">pay</th><th class="n">toxic</th><th class="n">management</th><th class="n">the</th></tr>
+<tr><td>„low pay, toxic management“</td><td class="n">0.42</td><td class="n">0.71</td><td class="n">0.57</td><td class="n">0</td></tr>
+<tr><td>„the pay could be better“</td><td class="n">0.65</td><td class="n">0</td><td class="n">0</td><td class="n">0.12</td></tr>
+</table></div>
+<p style="font-size:14.5px;color:var(--muted)">Ilustrativní hodnoty. Skutečný slovník má desítky tisíc sloupců a většina buněk je 0, takže se ukládá jako <a class="t" href="#g-sparse">řídká matice</a> (sparse matrix).</p>
+<p>Nastavení, která jsme použili a ladili:</p>
+<ul>
+  <li><strong>Zvlášť TF-IDF pro headline, pros a cons.</strong> „Management“ v <em>pros</em> znamená opak než v <em>cons</em>. Jeden společný vektorizér by ten rozdíl smazal. Tohle dělá baseline silnou a srovnání poctivé.</li>
+  <li><strong><a class="t" href="#g-ngram">n-gramy</a></strong> <code>ngram_range=(1,2)</code>: kromě jednotlivých slov i dvojice („not good“, „work life“).</li>
+  <li><strong><code>min_df</code></strong>: slovo musí být aspoň v <em>n</em> dokumentech, jinak se zahodí (překlepy, šum).</li>
+  <li><strong><code>sublinear_tf</code></strong>: místo počtu výskytů se použije 1 + log(počet), takže desetkrát opakované slovo nemá desetkrát větší váhu.</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="embed"><span class="step">Krok 7</span>Jak z textu udělat čísla II: embeddingy (AI komponenta)</h2>
+<p><a class="t" href="#g-embedding">Embedding</a> je vektor, který text vyrobí předtrénovaný jazykový model. Model se na obrovském množství textu naučil, že texty s podobným <em>významem</em> mají mít blízké vektory. „Terrible management“ a „leadership is awful“ nemají společné slovo, takže je TF-IDF považuje za nesouvisející, ale embeddingy budou blízko.</p>
+<div class="diagram" role="img" aria-label="Zjednodušený 2D obrázek embeddingů: texty o špatném vedení jsou u sebe, texty o dobrém platu jinde">
+<svg viewBox="0 0 520 220" width="520">
+  <g font-size="12.5" fill="var(--fg)">
+    <line x1="30" y1="200" x2="500" y2="200" stroke="var(--line)"/><line x1="30" y1="200" x2="30" y2="10" stroke="var(--line)"/>
+    <circle cx="110" cy="60" r="6" fill="var(--x)"/><text x="122" y="64">„terrible management“</text>
+    <circle cx="135" cy="88" r="6" fill="var(--x)"/><text x="147" y="92">„leadership is awful“</text>
+    <circle cx="380" cy="150" r="6" fill="var(--v)"/><text x="300" y="175">„great pay and benefits“</text>
+    <circle cx="410" cy="128" r="6" fill="var(--v)"/><text x="330" y="118">„salary is very good“</text>
+    <text x="40" y="215" fill="var(--muted)">ve skutečnosti 1 024 rozměrů, ne 2</text>
+  </g>
+</svg>
+</div>
+<ul>
+  <li><strong>Model:</strong> <code>qwen3-embedding:4b</code> na školním LiteLLM proxy (výchozí model kurzu). LiteLLM je server, který přeposílá požadavky na modely přes OpenAI-kompatibilní API, proto se volá knihovnou <code>openai</code>.</li>
+  <li><strong>Vstup:</strong> „Headline: …\nPros: …\nCons: …“. Popisky polí řeknou modelu, co je chvála a co kritika.</li>
+  <li><strong>Výstup:</strong> 2 560 čísel na recenzi. Necháme si prvních 1 024 a znovu je <a class="t" href="#g-l2">znormalizujeme</a> (délka vektoru = 1). Funguje to, protože model je trénovaný jako <a class="t" href="#g-matryoshka">Matryoshka</a>: nejdůležitější informace je v prvních dimenzích. Server zkrácení sám neumí, proto to děláme na klientu. Měřením (§ 9.3) jsme ověřili, že 1 024 dimenzí je stejně dobrých jako 2 560 a soubor je 2,5× menší.</li>
+  <li><strong>Žádný leakage:</strong> modelu posíláme jen text, nikdy odpověď. Embedding je funkce textu, proto ho smíme spočítat pro všechny řádky předem.</li>
+</ul>
+<h3>Cache a náklady</h3>
+<p>Volání API je pomalé a zadání chce, aby notebook běžel offline. Embeddingy proto ukládáme do <code>data/embeddings_qwen3-embedding-4b.csv.gz</code> (klíč = <code>review_id</code>). Notebook zavolá API jen pro recenze, které v cache chybí. Při odevzdaném ZIPu to znamená žádné. Vedle leží JSON s metadaty: model, datum, počet requestů, tokenů a čas.</p>
+<pre><code>def with_retry(fn, attempts=6, base=1.0, cap=30.0):
+    for i in range(attempts):
+        try:
+            return fn()
+        except Exception as e:
+            if not transient(e) or i == attempts - 1: raise
+            time.sleep(min(cap, base * 2 ** i * (0.5 + random.random())))  <span class="c"># exponenciální backoff + jitter</span></code></pre>
+<p>Tohle je vzor ze 3. semináře: dočasné chyby (429 Too Many Requests, 5xx) se zopakují s rostoucí pauzou. <em>Jitter</em> je náhodná složka pauzy, aby se klienti nesynchronizovali.</p>
+<div class="box ours"><span class="label">U nás (§ 9.5)</span>
+<p>20 000 recenzí = 313 requestů po 64 textech, 1 268 926 <a class="t" href="#g-token">tokenů</a>, 3,8 minuty. Školní proxy je zdarma. U komerčních API by to stálo pod 1 USD. Na celý dataset (580 tisíc recenzí) by to bylo zhruba 37 M tokenů a 1,8 hodiny.</p>
+</div>
+<h3>Kontrola, že embeddingy dávají smysl (§ 6.3)</h3>
+<p><a class="t" href="#g-cosine">Kosinová podobnost</a> dvou vektorů (1 = stejný směr, 0 = nesouvisí) vyšla pro recenze stejné třídy v průměru 0,59, pro různé třídy 0,57. Rozdíl je malý. Embedding totiž víc kóduje <em>téma</em> recenze (plat, vedení, work-life balance) než <em>verdikt</em>. Nejbližší sousedé jedné recenze opravdu mluví o stejném tématu. Verdikt z vektoru musí vytáhnout až klasifikátor.</p>
+
+<!-- ============================================================ -->
+<h2 id="pipeline"><span class="step">Krok 8</span>Pipeline: všechno, co se učí, uvnitř</h2>
+<p>Každý krok předzpracování v scikit-learn má dvě metody:</p>
+<ul>
+  <li><code>fit(X)</code>: <strong>naučí se</strong> stav z dat (medián, průměr a rozptyl pro škálování, slovník a IDF váhy pro TF-IDF),</li>
+  <li><code>transform(X)</code>: <strong>použije</strong> naučený stav na data.</li>
+</ul>
+<p><a class="t" href="#g-pipeline">Pipeline</a> řetězí kroky a model do jednoho objektu s <code>fit</code> a <code>predict</code>. <code>ColumnTransformer</code> aplikuje na různé sloupce různé úpravy. Když pak spustíš křížovou validaci, pipeline se v každém foldu znovu nafituje jen na trénovacích řádcích foldu. Tím je preprocessing leakage vyloučený z principu.</p>
+<div class="box analogy"><span class="label">Analogie</span>
+<p>Middleware chain nebo kompozice funkcí, kde každý článek má konfigurační fázi (<code>fit</code>) a běhovou fázi (<code>transform</code>). Celý řetěz se nasazuje jako jeden objekt, takže v produkci nemůžeš zapomenout na krok nebo ho omylem nakonfigurovat jinými daty.</p>
+</div>
+<pre><code>META = [("counts", log_scale,    COUNT_COLS),   <span class="c"># počty slov, velikost firmy: log1p + škálování</span>
+        ("num",    impute_scale, NUM_COLS),     <span class="c"># roky: doplnit medián + škálování</span>
+        ("bin",    "passthrough", BIN_COLS)]    <span class="c"># 0/1 příznaky beze změny</span>
+
+prep = ColumnTransformer(
+    [(f, TfidfVectorizer(...), f) for f in ["headline", "pros", "cons"]]  <span class="c"># 3× TF-IDF</span>
+    + META)
+model = Pipeline([("prep", prep), ("clf", LogisticRegression(max_iter=3000))])</code></pre>
+<ul>
+  <li><strong><a class="t" href="#g-scaling">Standardizace</a></strong> (<code>StandardScaler</code>): odečte průměr a vydělí směrodatnou odchylkou, takže všechny číselné příznaky mají podobný rozsah. Jinak by „rok 2018“ přehlušil „0/1“.</li>
+  <li><strong><code>log1p</code></strong> = log(1 + x). Počty slov a velikosti firem jsou extrémně nerovnoměrné (firma s 6 recenzemi vedle IBM se 43 748). Logaritmus to stlačí.</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="modely"><span class="step">Krok 9</span>Modely: dvě rodiny algoritmů</h2>
+<p>Zadání chce aspoň dvě „rodiny“, tedy principiálně odlišné algoritmy. Každou rodinu jsme zkombinovali s každou reprezentací textu, takže vznikla tabulka 2 × 2 a k ní jeden hybrid.</p>
+<h3>Logistická regrese (lineární model)</h3>
+<p>Každý příznak dostane váhu, model spočítá vážený součet <code>z = w₁x₁ + w₂x₂ + … + b</code> a <a class="t" href="#g-sigmoid">sigmoida</a> <code>1 / (1 + e^(−z))</code> ho převede na pravděpodobnost mezi 0 a 1. Učení = najít váhy, které nejlépe sedí na trénovací data. U TF-IDF to je intuitivní: slovo „toxic“ v cons dostane velkou zápornou váhu.</p>
+<p><strong><a class="t" href="#g-reg">Regularizace</a></strong> a parametr <code>C</code>: model má desítky tisíc vah a snadno by se „naučil zpaměti“ trénovací data (<a class="t" href="#g-overfit">overfitting</a>). Regularizace penalizuje velké váhy. <code>C</code> je inverzní síla penalizace: malé C = silná regularizace = jednodušší model. U embeddingů vyšlo optimální C = 0,0015 (silná regularizace, 1 024 hustých dimenzí), u TF-IDF C = 0,55.</p>
+<h3>Histogram gradient boosting (stromy)</h3>
+<p><a class="t" href="#g-tree">Rozhodovací strom</a> je série otázek typu if/else („je v cons slovo X?“, „je autor bývalý zaměstnanec?“) zakončená odpovědí. <a class="t" href="#g-gb">Gradient boosting</a> staví stovky malých stromů za sebou. Každý další opravuje chyby předchozích a výsledek je jejich součet. „Histogram“ znamená, že spojité hodnoty se pro rychlost rozdělí do přihrádek. <a class="t" href="#g-es">Early stopping</a> přidávání stromů zastaví, když se výsledek na malé odložené části trénovacích dat přestane zlepšovat.</p>
+<p>Stromy si s řídkou maticí desítek tisíc TF-IDF sloupců neporadí dobře. Pro ně proto TF-IDF nejdřív zhustíme přes <a class="t" href="#g-svd">TruncatedSVD</a> na 200 sloupců.</p>
+<div class="box ours"><span class="label">U nás</span>
+<p>Na obou reprezentacích vyhrála logistická regrese a byla mnohem rychlejší. Textové příznaky s tisíci rozměry jsou typicky „skoro lineárně oddělitelné“, takže složitější model nepřidá.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="ladeni"><span class="step">Krok 10</span>Ladění hyperparametrů</h2>
+<p><strong>Parametry</strong> si model najde sám při učení (váhy). <strong><a class="t" href="#g-hyper">Hyperparametry</a></strong> nastavujeme my zvenku: <code>C</code>, n-gramy, <code>min_df</code>, rychlost učení stromů, počet listů… Hledáme takové, které dají nejlepší výsledek v křížové validaci.</p>
+<p><code>RandomizedSearchCV</code> vylosuje <em>n</em> kombinací z rozsahů, které zadáme, každou vyhodnotí 3-fold skupinovou CV a nejlepší na konci znovu natrénuje na celé trénovací části (<code>refit=True</code>). <code>GridSearchCV</code> by zkusil všechny kombinace. Náhodné hledání je při stejném rozpočtu obvykle efektivnější.</p>
+<pre><code>s = RandomizedSearchCV(make_pipe("emb", "logreg"),
+                       {"clf__C": loguniform(1e-3, 1)},  <span class="c"># C log-rovnoměrně mezi 0,001 a 1</span>
+                       n_iter=10, scoring="roc_auc", cv=inner, refit=True)
+s.fit(train, y_train, groups=g_train)                    <span class="c"># groups = firmy</span></code></pre>
+<p><code>clf__C</code> je adresa parametru uvnitř pipeline: krok <code>clf</code>, parametr <code>C</code>. <code>loguniform</code> losuje rovnoměrně na logaritmické škále, protože u C nás zajímá řád (0,001 vs. 0,1), ne přesná hodnota.</p>
+<div class="box analogy"><span class="label">Pozor na best_score_</span>
+<p><code>best_score_</code> je skóre vítěze soutěže a vítěz vypadá vždycky o kousek lépe, než doopravdy je (vybrali jsme ho právě proto, že na těchhle foldech vyšel nejlíp). Je to jako vybrat nejlepší z deseti benchmarkových běhů a tvrdit, že je to průměrný výkon. Proto se jako výsledek uvádí skóre na testu. U nás CV 0,911 → test 0,906, tedy optimismus jen pět tisícin.</p>
+</div>
+<p>Model jsme vybrali podle <strong>CV skóre</strong> na trénovacích datech, tedy dřív, než jsme viděli test. Vyhrály Embeddingy + LogReg.</p>
+
+<!-- ============================================================ -->
+<h2 id="metriky"><span class="step">Krok 11</span>Metriky: jak poznat, že je model dobrý</h2>
+<h3>Matice záměn (confusion matrix)</h3>
+<p>Všechny metriky vycházejí z jedné tabulky: kolikrát model řekl co a jaká byla pravda. Tady je pro náš finální model na testu (3 993 recenzí):</p>
+<div class="cm" role="table" aria-label="Matice záměn finálního modelu">
+  <div class="h"></div><div class="h">model řekl <span class="x">x</span></div><div class="h">model řekl <span class="v">v</span></div>
+  <div class="h">ve skutečnosti <span class="x">x</span><br>(1 163)</div><div class="good"><b>942</b>správně odhalený nespokojený</div><div class="bad"><b>221</b>přehlédnutý nespokojený</div>
+  <div class="h">ve skutečnosti <span class="v">v</span><br>(2 830)</div><div class="bad"><b>451</b>falešný poplach</div><div class="good"><b>2 379</b>správně spokojený</div>
+</div>
+<p>Z toho:</p>
+<ul>
+  <li><strong><a class="t" href="#g-accuracy">Accuracy</a></strong> = (942 + 2 379) / 3 993 = <strong>0,832</strong>. Podíl správných odpovědí. Pozor, baseline „vždy v“ má 0,709.</li>
+  <li><strong><a class="t" href="#g-recall">Recall</a></strong> (citlivost) třídy x = 942 / 1 163 = <strong>0,81</strong>. Kolik ze skutečně nespokojených jsme našli.</li>
+  <li><strong><a class="t" href="#g-precision">Precision</a></strong> (přesnost) třídy x = 942 / (942 + 451) = <strong>0,68</strong>. Když model řekne „nespokojený“, jak často má pravdu.</li>
+  <li><strong><a class="t" href="#g-balacc">Balanced accuracy</a></strong> = průměr recallů obou tříd = (0,81 + 0,84) / 2 = <strong>0,825</strong>. Necitlivá na nevyváženost, baseline má 0,5.</li>
+  <li><strong><a class="t" href="#g-f1">F1</a></strong> = harmonický průměr precision a recall (0,74 pro třídu x).</li>
+</ul>
+<h3>ROC křivka a AUC</h3>
+<p>Model ve skutečnosti nevrací ano/ne, ale <em>pravděpodobnost</em>. Ano/ne vznikne až porovnáním s <a class="t" href="#g-threshold">prahem</a> (krok 12). <a class="t" href="#g-roc">ROC křivka</a> ukazuje všechny prahy najednou: pro každý práh vynese, kolik pozitivních model chytí (true positive rate) proti tomu, kolik negativních omylem označí (false positive rate).</p>
+<p><a class="t" href="#g-auc">ROC AUC</a> je plocha pod křivkou. Má hezký význam: je to <strong>pravděpodobnost, že náhodně vybraná doporučující recenze dostane od modelu vyšší skóre než náhodně vybraná nedoporučující</strong>. 0,5 je náhoda, 1,0 je dokonalé seřazení. Nezávisí na prahu ani na poměru tříd, proto je to hlavní srovnávací metrika.</p>
+<h3>Precision–recall křivka a AP</h3>
+<p>Stejný princip, ale osy jsou precision a recall pro třídu x (nespokojení), tedy pro tu menšinovou, „akční“ třídu, kterou by HR chtělo najít. <a class="t" href="#g-ap">Average precision (AP)</a> je plocha pod touto křivkou. Náhodný model má AP = podíl třídy x = 0,29. Náš má 0,827.</p>
+<figure>
+  <div class="paper"><img src="fig/roc.png" alt="ROC a precision-recall křivky pěti modelů na testovací sadě" loading="lazy"></div>
+  <figcaption>ROC (vlevo) a precision–recall pro třídu x (vpravo), všech pět modelů na testu. Tlustá čára = vybraný model. Čím víc vlevo nahoře (ROC) nebo vpravo nahoře (PR), tím líp (§ 8.4).</figcaption>
+</figure>
+
+<!-- ============================================================ -->
+<h2 id="prah"><span class="step">Krok 12</span>Volba prahu</h2>
+<p><code>predict()</code> standardně říká „v“, když pravděpodobnost ≥ 0,5. To ale není rozhodnutí, jen výchozí hodnota. Volba prahu je obchodní otázka: která chyba je dražší?</p>
+<ul>
+  <li><strong>False positive</strong> (model: <span class="v">v</span>, pravda: <span class="x">x</span>): přehlédneme nespokojeného zaměstnance.</li>
+  <li><strong>False negative</strong> (model: <span class="x">x</span>, pravda: <span class="v">v</span>): falešný poplach.</li>
+</ul>
+<p>Pro HR je dražší přehlédnout nespokojeného a navíc je těch nespokojených méně. Chyby jsme tedy zvážili převrácenou četností tříd: přehlédnutý x stojí 0,71 / 0,29 ≈ 2,4× víc než falešný poplach. Minimalizovat takovou cenu je matematicky totéž jako maximalizovat <a class="t" href="#g-balacc">balanced accuracy</a>.</p>
+<p><strong>Kde práh hledat:</strong> rozhodně ne na testu, to by byl leakage. Použijeme <a class="t" href="#g-oof">out-of-fold predikce</a>: v křížové validaci dostane každý trénovací řádek předpověď od modelu, který ho při učení neviděl. Na těchto „poctivých“ predikcích zkusíme všechny prahy a vybereme ten s nejvyšší balanced accuracy. Ten pak beze změny použijeme na test.</p>
+<pre><code>oof = cross_val_predict(final_model, train, y_train, groups=g_train, cv=inner, method="predict_proba")[:, 1]
+fpr, tpr, thr = roc_curve(y_train, oof)
+t_star = thr[np.argmax((tpr + 1 - fpr) / 2)]     <span class="c"># balanced accuracy pro každý práh → 0,697</span></code></pre>
+<figure>
+  <div class="paper"><img src="fig/threshold.png" alt="Balanced accuracy v závislosti na prahu, maximum kolem 0,70" loading="lazy"></div>
+  <figcaption>Balanced accuracy na out-of-fold predikcích pro každý práh. Maximum je u 0,70. Křivka je kolem maxima plochá, takže přesná hodnota není kritická (§ 8.1).</figcaption>
+</figure>
+<figure>
+  <div class="paper"><img src="fig/cm.png" alt="Matice záměn při prahu 0,5 a při zvoleném prahu 0,697" loading="lazy"></div>
+  <figcaption>Stejný model, dva prahy. S prahem 0,70 najdeme víc nespokojených za cenu víc falešných poplachů. Accuracy klesne z 0,851 na 0,832, balanced accuracy stoupne z 0,800 na 0,825 (§ 8.3).</figcaption>
+</figure>
+
+<!-- ============================================================ -->
+<h2 id="ai"><span class="step">Krok 13</span>Vyhodnocení AI komponenty: TF-IDF vs. embeddingy</h2>
+<h3>Výsledky na testu (§ 8.2)</h3>
+<div class="tbl"><table>
+<tr><th>Model</th><th class="n">CV AUC</th><th class="n">Test AUC</th><th class="n">AP (x)</th></tr>
+<tr class="win"><td>Embeddingy + LogReg</td><td class="n">0.911</td><td class="n">0.906</td><td class="n">0.827</td></tr>
+<tr><td>Hybrid (TF-IDF + embeddingy) + LogReg</td><td class="n">0.907</td><td class="n">0.901</td><td class="n">0.819</td></tr>
+<tr><td>TF-IDF + LogReg (baseline)</td><td class="n">0.898</td><td class="n">0.894</td><td class="n">0.802</td></tr>
+<tr><td>Embeddingy + HGB</td><td class="n">0.897</td><td class="n">0.891</td><td class="n">0.808</td></tr>
+<tr><td>TF-IDF/SVD + HGB</td><td class="n">0.880</td><td class="n">0.879</td><td class="n">0.773</td></tr>
+<tr><td>Vždy „doporučuje“</td><td class="n">–</td><td class="n">0.500</td><td class="n">0.291</td></tr>
+</table></div>
+<h3>Je ten rozdíl skutečný? Bootstrap (§ 9.1)</h3>
+<p>Rozdíl AUC 0,011 může být náhoda konkrétní testovací sady. <a class="t" href="#g-bootstrap">Bootstrap</a>: 500krát náhodně vylosujeme (s opakováním) 3 993 recenzí z testu, na každém vylosování spočítáme rozdíl a podíváme se na rozsah prostředních 95 % výsledků. Vyšlo <strong>[+0,004; +0,019]</strong>. Interval nezahrnuje nulu, takže embeddingy jsou opravdu lepší. Poctivá poznámka v notebooku: losujeme recenze, ne firmy, takže interval je o něco užší, než by měl být.</p>
+<h3>Learning curve: kolik dat je potřeba (§ 9.2)</h3>
+<figure>
+  <div class="paper"><img src="fig/lc.png" alt="Learning curves TF-IDF a embeddingů, embeddingy jsou nad TF-IDF a rozdíl se s více daty zmenšuje" loading="lazy"></div>
+  <figcaption>S 320 označenými recenzemi: embeddingy 0,87, TF-IDF 0,81. S 10 700: 0,911 vs. 0,898. Embeddingy si znalost jazyka přinášejí z předtrénování, TF-IDF se každé slovo musí naučit z našich dat.</figcaption>
+</figure>
+<p><a class="t" href="#g-lc">Learning curve</a> ukazuje výkon v závislosti na množství trénovacích dat. Tohle je nejsilnější argument pro embeddingy: když je označených dat málo (což je v praxi běžné), pomůžou nejvíc.</p>
+<h3>Další zjištění</h3>
+<ul>
+  <li><strong>Počet dimenzí (§ 9.3):</strong> 32 → 0,80, 128 → 0,88, 512 → 0,907, 1 024 → 0,911. Plných 2 560 (měřeno při vývoji) → 0,904, tedy nic navíc.</li>
+  <li><strong>Hybrid nepomohl:</strong> jedno C musí regularizovat desítky tisíc řídkých a 1 024 hustých sloupců naráz a embeddingy už většinu informace ze slov obsahují.</li>
+  <li><strong>Analýza chyb (§ 9.4):</strong> TF-IDF se plete, když někdo píše stížnosti do pole <em>pros</em> (každé slovo tam posouvá skóre nahoru) nebo když je pozitivní slovo negované („Don't Recommend“). Embeddingy se pletou u krátkých recenzí s ostrými cons, jejichž autor přesto doporučuje („Great people … Careers dont exist“). To jsou upřímně nejednoznačné případy.</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="jak">Jak jsem to dělal já, a jak bys to dělal ručně</h2>
+<p>Ručně bys to dělal v Jupyteru buňku po buňce, v pořadí kroků výše. Já jsem pořadí dodržel, jen jsem část práce dělal skripty mimo notebook a notebook nakonec vygeneroval. Skutečný sled kroků:</p>
+<ol>
+  <li><strong>Zadání:</strong> stáhl jsem stránky kurzu a vypsal si požadavky (krok 1).</li>
+  <li><strong>Materiály:</strong> přečetl jsem notebooky ze seminářů 1–4 a převzal z nich knihovny a styl. Seminář 2: <code>Pipeline</code>, <code>ColumnTransformer</code>, <code>StratifiedKFold</code>, <code>RandomizedSearchCV</code>, volba prahu na OOF. Seminář 3: <code>with_retry</code>, cache, <code>l2_normalise</code>, embeddingy jako featury proti TF-IDF.</li>
+  <li><strong>Prostředí:</strong> <code>.venv</code> s Pythonem 3.14 a balíky kurzu (<code>requirements.txt</code>).</li>
+  <li><strong>Průzkum dat skriptem:</strong> tvar, chybějící hodnoty, poměr tříd, AUC jednotlivých hodnocení. Tady vyskočil leakage s hodnoceními.</li>
+  <li><strong>Sonda do API:</strong> jaké modely jsou k dispozici, kolik dimenzí vrací embedding (2 560), jak je to rychlé (~110 textů/s) a jestli jde zkrátit dimenze na serveru (nejde).</li>
+  <li><strong>Vzorek + embeddingy:</strong> <code>dev/build_sample_and_embed.py</code> postavil vzorek stejným kódem jako notebook a stáhl embeddingy (3,8 min).</li>
+  <li><strong>Rychlý experiment:</strong> <code>dev/quick_exp.py</code> ověřil, kolik dimenzí stačí a jak dlouho trvá gradient boosting. Podle toho jsem nastavil rozpočty ladění, aby notebook běžel pod 30 minut.</li>
+  <li><strong>Notebook:</strong> <code>dev/make_notebook.py</code> obsahuje všechny buňky a vygeneruje <code>term_project.ipynb</code>. Pak <code>jupyter nbconvert --execute</code> spustí notebook celý od začátku, stejně jako „Restart &amp; Run All“.</li>
+  <li><strong>Čtení výsledků a oprava textu:</strong> část komentářů jsem napsal předem podle očekávání a dvě se nepotvrdila (skupinový split neměl efekt, hybrid nepomohl). Text jsem přepsal podle skutečných čísel.</li>
+  <li><strong>Export a kontrola:</strong> HTML export, ZIP a nakonec spuštění z rozbaleného ZIPu bez surových dat a bez klíče, abych ověřil, že opravdu běží offline.</li>
+</ol>
+<div class="box dev"><span class="label">Když budeš chtít něco změnit</span>
+<p>Uprav buňku v <code>dev/make_notebook.py</code>, pak:</p>
+<pre><code>.venv/bin/python dev/make_notebook.py
+.venv/bin/jupyter nbconvert --to notebook --execute --inplace term_project.ipynb
+.venv/bin/jupyter nbconvert --to html term_project.ipynb</code></pre>
+<p>Nebo uprav přímo notebook v JupyterLabu (<code>.venv/bin/jupyter lab</code>). Pak ale generátor přestane odpovídat, tak si vyber jedno.</p>
+</div>
+<h3>Soubory projektu</h3>
+<div class="tbl"><table>
+<tr><th>Soubor</th><th>Co to je</th><th>Do ZIPu?</th></tr>
+<tr><td><code>term_project.ipynb</code> / <code>.html</code></td><td>notebook a jeho HTML export</td><td>ano</td></tr>
+<tr><td><code>data/glassdoor_sample.csv</code></td><td>vzorek 20 000 recenzí</td><td>ano</td></tr>
+<tr><td><code>data/firms.csv</code></td><td>tabulka firem (groupby z celých dat)</td><td>ano</td></tr>
+<tr><td><code>data/embeddings_…csv.gz</code> + <code>.meta.json</code></td><td>cache embeddingů a jejich náklady</td><td>ano</td></tr>
+<tr><td><code>data/raw/</code></td><td>původní data z Kaggle (293 MB)</td><td>ne, odkaz v notebooku</td></tr>
+<tr><td><code>.env</code></td><td>API klíč</td><td><strong>nikdy</strong></td></tr>
+<tr><td><code>dev/</code></td><td>pomocné skripty a generátor</td><td>ne</td></tr>
+</table></div>
+
+<!-- ============================================================ -->
+<h2 id="obhajoba">Otázky na obhajobu</h2>
+<p>Ověřovací otázka cílí na kód, data nebo rozhodnutí v notebooku a odpovídá se bez spoluhráče. Tohle jsou pravděpodobné otázky s krátkou odpovědí, kterou bys měl umět říct vlastními slovy.</p>
+
+<details class="qa"><summary>Proč jste vyřadili overall_rating, když tak dobře předpovídá?</summary>
+<p>Protože to není předpověď, ale přepis odpovědi: uživatel ho vyplňuje na stejném formuláři ve stejnou chvíli jako recommend. Je to target leakage. Model by se naučil „5 hvězd = doporučuje“ a v zamýšleném použití (text bez hodnocení) by byl k ničemu. Ukázali jsme to v § 5.3: samotné overall_rating má AUC 0,93.</p>
+<p class="where">Notebook § 1.2, § 5.3</p></details>
+
+<details class="qa"><summary>Co je StratifiedGroupKFold a proč ho používáte?</summary>
+<p>Rozdělení dat na foldy, které zároveň drží poměr tříd v každém foldu (stratified) a dává všechny řádky jedné skupiny do stejného foldu (group). Skupinou je u nás firma, takže model testujeme na firmách, které neviděl. Zabraňuje to group leakage. Empiricky se ukázalo, že rozdíl proti náhodnému splitu je zanedbatelný (0,883 vs. 0,885).</p>
+<p class="where">§ 5.1, § 5.4</p></details>
+
+<details class="qa"><summary>Proč nestačí accuracy?</summary>
+<p>Kvůli nevyváženým třídám: 71 % recenzí doporučuje, takže model „vždy ano“ má accuracy 0,71 a nic neumí. ROC AUC nezávisí na prahu ani na poměru tříd. AP třídy x měří, jak dobře najdeme menšinovou třídu, a její náhodná úroveň je 0,29.</p>
+<p class="where">§ 1.3, § 3.2</p></details>
+
+<details class="qa"><summary>Co znamená AUC 0,906?</summary>
+<p>S pravděpodobností 90,6 % dá model náhodně vybrané doporučující recenzi vyšší skóre než náhodně vybrané nedoporučující. 0,5 = náhoda, 1 = dokonalé seřazení.</p></details>
+
+<details class="qa"><summary>Jak jste zvolili práh a proč ne na testu?</summary>
+<p>Na out-of-fold predikcích trénovací sady jsme vybrali práh s nejvyšší balanced accuracy, což odpovídá ceně chyb vážené převrácenou četností tříd (přehlédnutý nespokojený stojí 2,4× víc). Vyšlo 0,697. Na testu ne, protože práh je naučená část modelu. Volba podle testu by byla test-set leakage a výsledek by byl optimistický.</p>
+<p class="where">§ 8.1</p></details>
+
+<details class="qa"><summary>Co je TF-IDF a proč tři vektorizéry?</summary>
+<p>Váha slova = jak časté je v tomto textu × jak vzácné je v korpusu. Tři zvlášť (headline, pros, cons), protože stejné slovo znamená v pros něco jiného než v cons. Jeden vektorizér na spojeném textu by ten rozdíl smazal.</p>
+<p class="where">§ 7.1</p></details>
+
+<details class="qa"><summary>Co je embedding a proč z něj není leakage?</summary>
+<p>Vektor, který jazykový model vyrobí z textu tak, aby texty s podobným významem byly blízko. Modelu posíláme jen text, nikdy label, takže embedding je funkce textu. Proto ho smíme spočítat pro všechna data předem, stejně jako počet slov.</p>
+<p class="where">§ 6.1</p></details>
+
+<details class="qa"><summary>Proč jen 1 024 dimenzí z 2 560?</summary>
+<p>Model je trénovaný jako Matryoshka (nejdůležitější informace v prvních dimenzích), takže zkrácení a znovunormalizace dávají platný kratší embedding. Změřili jsme, že 1 024 dimenzí dává AUC 0,911 a plných 2 560 dává 0,904. Cache je díky tomu 48 MB místo ~120 MB. Server zkrácení nepodporuje, proto ho děláme na klientu.</p>
+<p class="where">§ 6.1, § 9.3</p></details>
+
+<details class="qa"><summary>Proč je best_score_ optimistické a co reportujete?</summary>
+<p>best_score_ je skóre vítěze mezi všemi zkoušenými konfiguracemi na stejných foldech, takže vítěz je z principu nadhodnocený (selection optimism). Reportujeme skóre na testovací sadě, použité jednou: 0,906 proti CV 0,911.</p>
+<p class="where">§ 7.2, § 8.2</p></details>
+
+<details class="qa"><summary>Co dělá parametr C v logistické regresi?</summary>
+<p>Inverzní síla regularizace. Malé C = velká penalizace vah = jednodušší model, menší riziko overfittingu. Embeddingy vyšly s C = 0,0015, TF-IDF s C = 0,55. Ladili jsme ho přes RandomizedSearchCV s log-rovnoměrným rozdělením.</p></details>
+
+<details class="qa"><summary>Proč je preprocessing uvnitř Pipeline?</summary>
+<p>Aby se všechno, co se učí z dat (medián pro doplnění, průměr a rozptyl pro škálování, slovník TF-IDF), naučilo jen na trénovacích řádcích, a v CV znovu v každém foldu. Kdyby se to fitovalo na všech datech předem, testovací řádky by ovlivnily trénink (preprocessing leakage).</p>
+<p class="where">§ 4, § 7.1</p></details>
+
+<details class="qa"><summary>Jak víte, že embeddingy jsou opravdu lepší, a ne náhodou?</summary>
+<p>Tři důkazy: lepší jsou v CV i na testu, u obou rodin algoritmů. Bootstrap interval rozdílu AUC [+0,004; +0,019] nezahrnuje nulu. Learning curve ukazuje konzistentní náskok, největší při málo datech. Omezení: bootstrap losuje recenze, ne firmy, takže interval je spíš užší.</p>
+<p class="where">§ 9.1, § 9.2</p></details>
+
+<details class="qa"><summary>Kolik stála AI komponenta?</summary>
+<p>313 requestů, 1,27 M tokenů, 3,8 minuty na školním proxy (cena 0). Komerčně pod 1 USD. Výsledky jsou v cache, takže notebook běží offline a API nevolá.</p>
+<p class="where">§ 9.5</p></details>
+
+<details class="qa"><summary>Jak jste vytvořili vzorek a proč je reprodukovatelný?</summary>
+<p>Vyřadili jsme o, doplnili prázdné texty a odstranili duplicity. Pak stratifikovaný vzorek: z každé třídy stejný podíl přes groupby(...).sample(frac=..., random_state=42). Pevný seed znamená, že vzorek je pokaždé stejný, a poměr tříd sedí s celými daty na 4 desetinná místa.</p>
+<p class="where">§ 2.1</p></details>
+
+<!-- ============================================================ -->
+<h2 id="glosar">Glosář</h2>
+<p>Abecedně, s anglickým termínem, protože ten najdeš v kódu i v dokumentaci.</p>
+<dl class="gloss">
+<dt id="g-accuracy">Accuracy <span class="en">(přesnost klasifikace)</span></dt><dd>Podíl správných odpovědí. Při nevyvážených třídách zavádějící: musí se srovnat s baseline.</dd>
+<dt id="g-ap">AP — average precision</dt><dd>Plocha pod precision–recall křivkou. Shrnuje, jak dobře model řadí danou třídu nahoru. Náhodná úroveň = podíl té třídy.</dd>
+<dt id="g-auc">AUC — ROC AUC</dt><dd>Plocha pod ROC křivkou. Pravděpodobnost, že náhodný pozitivní příklad dostane vyšší skóre než náhodný negativní. 0,5 náhoda, 1 dokonalé.</dd>
+<dt id="g-balacc">Balanced accuracy</dt><dd>Průměr recallů všech tříd. Necitlivá na nevyváženost, náhoda = 0,5.</dd>
+<dt id="g-baseline">Baseline</dt><dd>Nejjednodušší možné řešení, se kterým se všechno srovnává. U nás „vždy doporučuje“ (DummyClassifier). Pro AI komponentu je baseline TF-IDF.</dd>
+<dt id="g-bootstrap">Bootstrap</dt><dd>Odhad nejistoty výsledku: opakovaně losujeme vzorek s opakováním ze stejných dat a sledujeme, jak moc se metrika mění.</dd>
+<dt id="g-cosine">Cosine similarity <span class="en">(kosinová podobnost)</span></dt><dd>Kosinus úhlu mezi dvěma vektory. 1 = stejný směr (podobný význam), 0 = nesouvisí. Pro vektory délky 1 je to prostý skalární součin.</dd>
+<dt id="g-crisp">CRISP-DM</dt><dd>Standardní postup data-science projektu: business understanding → data understanding → data preparation → modelling → evaluation → deployment.</dd>
+<dt id="g-cv">Cross-validation <span class="en">(křížová validace)</span></dt><dd>Data se rozdělí na k dílů, model se k-krát trénuje na k−1 dílech a hodnotí na zbylém. Průměr je odhad výkonu bez sahání na test.</dd>
+<dt id="g-eda">EDA — exploratory data analysis</dt><dd>Úvodní průzkum dat: struktura, chybějící hodnoty, rozdělení, vztahy, grafy.</dd>
+<dt id="g-es">Early stopping</dt><dd>Zastavení učení, když se výsledek na odložené validační části přestane zlepšovat. Chrání před overfittingem.</dd>
+<dt id="g-embedding">Embedding</dt><dd>Vektor čísel, kterým jazykový model reprezentuje význam textu. Podobné texty mají blízké vektory.</dd>
+<dt id="g-f1">F1</dt><dd>Harmonický průměr precision a recall. Vysoký jen tehdy, když jsou vysoké obě.</dd>
+<dt id="g-feature">Feature <span class="en">(příznak)</span></dt><dd>Jeden vstupní údaj modelu (sloupec X).</dd>
+<dt id="g-gb">Gradient boosting</dt><dd>Model z mnoha malých rozhodovacích stromů, kde každý další opravuje chyby součtu předchozích. V kódu <code>HistGradientBoostingClassifier</code>.</dd>
+<dt id="g-group">Group split <span class="en">(skupinové rozdělení)</span></dt><dd>Rozdělení dat, při kterém jsou všechny řádky jedné skupiny (u nás firmy) na stejné straně.</dd>
+<dt id="g-hyper">Hyperparameter</dt><dd>Nastavení modelu, které se neučí z dat, ale volíme ho zvenku (C, n-gramy, rychlost učení). Ladí se přes CV.</dd>
+<dt id="g-imputation">Imputation <span class="en">(imputace)</span></dt><dd>Doplnění chybějících hodnot, např. mediánem. Medián je naučená hodnota, proto patří do pipeline.</dd>
+<dt id="g-imbalance">Class imbalance <span class="en">(nevyvážené třídy)</span></dt><dd>Jedna třída je výrazně častější (u nás 71 : 29). Ovlivňuje volbu metrik a prahu.</dd>
+<dt id="g-l2">L2 normalizace</dt><dd>Vydělení vektoru jeho délkou, takže má délku 1. Pak se dají vektory porovnávat jen podle směru.</dd>
+<dt id="g-leakage">Data leakage <span class="en">(únik informací)</span></dt><dd>Model se při učení nebo hodnocení dostane k informaci, kterou by v reálném použití neměl. Výsledek je pak nadhodnocený.</dd>
+<dt id="g-lc">Learning curve</dt><dd>Graf výkonu modelu v závislosti na množství trénovacích dat.</dd>
+<dt id="g-model">Model</dt><dd>Funkce ze vstupů na předpověď, jejíž parametry se našly učením z dat.</dd>
+<dt id="g-matryoshka">Matryoshka representation learning</dt><dd>Způsob tréninku embeddingů, při kterém i prvních <em>k</em> dimenzí tvoří použitelný kratší embedding (jako matrjoška v matrjošce).</dd>
+<dt id="g-median">Medián</dt><dd>Prostřední hodnota seřazených dat. Na rozdíl od průměru ho neovlivní extrémy.</dd>
+<dt id="g-ngram">n-gram</dt><dd>Posloupnost n slov za sebou. Unigram „good“, bigram „not good“.</dd>
+<dt id="g-oof">Out-of-fold (OOF) predikce</dt><dd>Předpovědi pro trénovací řádky, kde každý řádek předpovídá model z CV, který ho při učení neviděl. Poctivý podklad pro volbu prahu.</dd>
+<dt id="g-overfit">Overfitting <span class="en">(přeučení)</span></dt><dd>Model se naučí trénovací data zpaměti včetně šumu a na nových datech funguje hůř.</dd>
+<dt id="g-pipeline">Pipeline</dt><dd>Řetěz kroků předzpracování a modelu v jednom objektu. <code>fit</code> učí všechny kroky jen na předaných datech, <code>predict</code> je aplikuje.</dd>
+<dt id="g-precision">Precision</dt><dd>Z případů, které model označil jako třídu X, kolik jich opravdu je X.</dd>
+<dt id="g-recall">Recall <span class="en">(citlivost)</span></dt><dd>Ze všech skutečných případů třídy X, kolik jich model našel.</dd>
+<dt id="g-reg">Regularization <span class="en">(regularizace)</span></dt><dd>Penalizace složitosti modelu (velkých vah), která brání overfittingu. V LogisticRegression ji řídí <code>C</code>: menší = silnější.</dd>
+<dt id="g-roc">ROC křivka</dt><dd>Graf true positive rate proti false positive rate pro všechny možné prahy.</dd>
+<dt id="g-scaling">Standardization <span class="en">(standardizace)</span></dt><dd>Převod na průměr 0 a směrodatnou odchylku 1, aby měly příznaky srovnatelný rozsah.</dd>
+<dt id="g-seed">Seed / random_state</dt><dd>Počáteční hodnota generátoru náhodných čísel. Stejný seed = stejné „náhodné“ výsledky, tedy reprodukovatelnost.</dd>
+<dt id="g-sigmoid">Sigmoid <span class="en">(sigmoida)</span></dt><dd>Funkce 1 / (1 + e<sup>−z</sup>), která převede libovolné číslo na hodnotu mezi 0 a 1.</dd>
+<dt id="g-sparse">Sparse matrix <span class="en">(řídká matice)</span></dt><dd>Matice, kde je většina hodnot nulová. Ukládá se jen nenulové, což šetří paměť.</dd>
+<dt id="g-strat">Stratifikace</dt><dd>Rozdělení nebo vzorkování, které zachová poměr tříd.</dd>
+<dt id="g-svd">TruncatedSVD</dt><dd>Matematická komprese matice na menší počet sloupců, které zachytí co nejvíc informace. U nás 200 sloupců z TF-IDF pro stromové modely.</dd>
+<dt id="g-target">Target <span class="en">(cílová proměnná, label)</span></dt><dd>To, co předpovídáme. U nás <code>recommend</code> → <code>y</code>.</dd>
+<dt id="g-test">Test set</dt><dd>Data odložená stranou až do konce. Simulují budoucí data, použijí se jednou.</dd>
+<dt id="g-tfidf">TF-IDF</dt><dd>Reprezentace textu, kde má každé slovo váhu podle četnosti v textu a vzácnosti v celém korpusu.</dd>
+<dt id="g-threshold">Threshold <span class="en">(práh)</span></dt><dd>Hranice, nad kterou se pravděpodobnost převede na rozhodnutí „ano“. Výchozí je 0,5, my máme 0,697.</dd>
+<dt id="g-token">Token</dt><dd>Kousek textu, se kterým pracuje jazykový model (zhruba slovo nebo jeho část). Podle tokenů se počítá cena a zátěž.</dd>
+<dt id="g-train">Training set</dt><dd>Data, na kterých se model učí a ladí.</dd>
+<dt id="g-tree">Decision tree <span class="en">(rozhodovací strom)</span></dt><dd>Model ze stromu otázek if/else nad příznaky, zakončený odpovědí v listech.</dd>
+</dl>
+
+<p class="foot">Vytvořeno z notebooku <code>term_project.ipynb</code> (běh 8. 11. 2026). Všechna čísla jsou z jeho výstupů. Když notebook změníte a znovu spustíte, čísla se můžou mírně posunout.</p>
+</main>
+</div>
