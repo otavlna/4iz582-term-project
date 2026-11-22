@@ -965,13 +965,21 @@ each have inflated the score without making the model more useful.
 
 | Member | Contribution |
 |---|---|
-| Bc. Ota Vlna (4IZ582) | *to be completed by the team* — e.g. AI component (embeddings, cache, comparison), modelling and evaluation |
-| Bc. Artem Budnyk (4IZ566) | *to be completed by the team* — e.g. data understanding, sampling, preprocessing, TF-IDF baseline |
+| Bc. Ota Vlna (4IZ582) | Project setup and the technically heavier parts: modelling pipelines, hyperparameter tuning, evaluation and threshold choice, and the AI component (school embedding endpoint, cache, TF-IDF vs. embeddings comparison). |
+| Bc. Artem Budnyk (4IZ566) | Data understanding and the early stages: reviewing the dataset and its columns, checking the cleaning and sampling steps, exploratory analysis and its interpretation, and validating the data-science side of the work: the choice of metrics, the evaluation and the interpretation of the results. |
 
-**AI tools.** *To be completed by the team, honestly and specifically* — for example: the notebook skeleton and parts
-of the code were drafted with an AI coding assistant (Claude Code); every cell was run, checked and edited by the team,
-and all modelling decisions (excluded columns, split by firm, threshold rule) were discussed and can be defended by both
-members. The embedding model `qwen3-embedding:4b` is part of the analysis itself (section 6).
+Both members discussed the methodological decisions (excluded columns, split by firm, threshold rule) and went through
+the results together.
+
+**AI tools.** Most of the code in this notebook was generated with Claude Code (Anthropic); ChatGPT was used for
+questions and explanations along the way. Claude Code generated data loading
+and sampling, the preprocessing and modelling pipelines, hyperparameter tuning, evaluation, the embedding cache, the code
+comments and the helper scripts in `dev/`. The team chose the dataset and the task, set the goals of each step, and
+reviewed, ran and checked every cell. We also made the methodological decisions that we can explain and defend:
+excluding the rating columns as leaky features, splitting train/test by firm, and the rule for choosing the decision
+threshold. AI tools also explained the proposed solutions, which helped us understand them, and we rejected or changed
+suggestions that did not fit. The embedding model `qwen3-embedding:4b` is part of the analysis itself (section 6), not a
+writing aid.
 
 ## References
 
