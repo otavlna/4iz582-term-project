@@ -86,7 +86,9 @@ warnings.filterwarnings("ignore", message="A worker stopped while some jobs were
 SEED = 42
 N_SAMPLE = 20_000                      # rows in the stratified sample (section 2)
 EMB_DIM = 1024                         # embedding dimensions kept in the cache (section 6)
-N_JOBS = 4                             # parallel CV jobs; 4 keeps memory use moderate on jupyter.vse.cz
+N_JOBS = 1                             # no parallel CV workers: they stall on jupyter.vse.cz
+from threadpoolctl import threadpool_limits   # ships with scikit-learn
+threadpool_limits(2)                   # cap OpenMP/BLAS threads; the server reports more cores than a user gets
 
 DATA = Path("data")
 RAW_CSV = DATA / "raw" / "glassdoor_reviews.csv"
