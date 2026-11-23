@@ -617,7 +617,11 @@ md(r"""
 ### 7.2 Hyperparameter tuning
 
 `RandomizedSearchCV` with `refit=True`, scoring ROC AUC, on the training part only, with the firm-grouped 3-fold
-`inner` splitter (the groups are passed to `fit`). The search spaces are kept small enough for the 30-minute limit:
+`inner` splitter (the groups are passed to `fit`). Each model tries **7 random configurations**. jupyter.vse.cz gives a
+user 2 CPUs, and with 8–15 configurations the notebook took 29.7 minutes there, too close to the 30-minute limit. In
+those longer searches the winning configuration was always among the first seven (random search draws the candidates
+in a fixed order for a given seed), so the shorter search selects the same models with the same scores.
+The search spaces:
 
 | Model | Searched | Fixed (and why) |
 |---|---|---|
@@ -632,16 +636,19 @@ reported is the test score in section 8, computed once.
 """)
 
 code(r"""
+# 7 configurations per model: earlier runs with 8-15 took 29.7 min on the 2 CPUs of jupyter.vse.cz,
+# and the best configuration was always among the first 7 drawn, so the selected models do not change
+N_ITER = 7
 HGB_SPACE = {"clf__learning_rate": loguniform(0.03, 0.3), "clf__max_leaf_nodes": randint(8, 48),
              "clf__min_samples_leaf": randint(20, 200), "clf__l2_regularization": loguniform(1e-3, 10)}
 SPACES = {
     ("tfidf", "logreg"): ({"clf__C": loguniform(0.05, 20),
                            "prep__pros__ngram_range": [(1, 1), (1, 2)], "prep__cons__ngram_range": [(1, 1), (1, 2)],
-                           "prep__pros__min_df": [1, 2, 5], "prep__cons__min_df": [1, 2, 5]}, 15),
-    ("tfidf", "hgb"): (HGB_SPACE, 10),
-    ("emb", "logreg"): ({"clf__C": loguniform(1e-3, 1)}, 10),
-    ("emb", "hgb"): (HGB_SPACE, 10),
-    ("hybrid", "logreg"): ({"clf__C": loguniform(0.01, 2)}, 8),
+                           "prep__pros__min_df": [1, 2, 5], "prep__cons__min_df": [1, 2, 5]}, N_ITER),
+    ("tfidf", "hgb"): (HGB_SPACE, N_ITER),
+    ("emb", "logreg"): ({"clf__C": loguniform(1e-3, 1)}, N_ITER),
+    ("emb", "hgb"): (HGB_SPACE, N_ITER),
+    ("hybrid", "logreg"): ({"clf__C": loguniform(0.01, 2)}, N_ITER),
 }
 NAMES = {("tfidf", "logreg"): "TF-IDF + LogReg", ("tfidf", "hgb"): "TF-IDF/SVD + HGB",
          ("emb", "logreg"): "Embeddings + LogReg", ("emb", "hgb"): "Embeddings + HGB",
